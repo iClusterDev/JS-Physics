@@ -1,3 +1,4 @@
-import HelloWorld from './components/HelloWorld';
+import { GameObject } from './GameObject';
 
-HelloWorld.hello();
+const go = new GameObject({});
+console.log('DEBUG ~ go', go);
