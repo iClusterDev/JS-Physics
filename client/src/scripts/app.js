@@ -1,14 +1,6 @@
 import ECSEntity from './lib/ECSEntity';
+import ECSSystem from './lib/ECSSystem';
 import ECSComponent from './lib/ECSComponent';
-
-const health = new ECSComponent({
-  name: 'health',
-  data: {
-    value: 100,
-    max: 200,
-    min: 0,
-  },
-});
 
 const physics = new ECSComponent({
   name: 'physics',
@@ -20,18 +12,27 @@ const physics = new ECSComponent({
   },
 });
 
-const graphics = new ECSComponent({
-  name: 'graphics',
-  data: {
-    spritesheet: 'image',
-    columns: 3,
-    rows: 3,
+const entity = new ECSEntity({ name: 'myEntity' });
+entity.addComponent(physics);
+
+const rectMoveSystem = new ECSSystem({
+  name: 'moveSystem',
+  onNext: (elapsedTime, ecsEntities) => {
+    ecsEntities.forEach((entity) => {
+      console.log(entity.components.physics.x++);
+    });
   },
 });
 
-const entity = new ECSEntity();
-entity
-  .addComponent(health)
-  .addComponent(physics)
-  .addComponent(graphics)
-  .print();
+rectMoveSystem.next(16, [entity]);
+rectMoveSystem.next(16, [entity]);
+rectMoveSystem.next(16, [entity]);
+rectMoveSystem.next(16, [entity]);
+rectMoveSystem.next(16, [entity]);
+rectMoveSystem.next(16, [entity]);
+
+// const testNext = (...params) => {
+//   console.log(params);
+// };
+
+// testNext(1, 2, 3);

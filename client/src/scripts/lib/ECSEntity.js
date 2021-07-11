@@ -5,8 +5,8 @@ import ECSElement from './ECSElement';
  * components container with id
  */
 class ECSEntity extends ECSElement {
-  constructor() {
-    super('ECSEntity');
+  constructor({ name = '' } = { name: '' }) {
+    super(name, 'ECSEntity');
     this.components = {};
   }
 
@@ -47,7 +47,7 @@ class ECSEntity extends ECSElement {
       JSON.stringify(
         {
           id: this.id,
-          type: this.type,
+          // type: this.type,
           components: this.components,
         },
         null,

@@ -7,28 +7,38 @@ const ECSElementTypes = ['ECSEntity', 'ECSSystem', 'ECSComponent'];
 class ECSElement {
   #id;
   #type;
+  #name;
 
-  constructor(type = null) {
+  constructor(name = '', type = '') {
+    if (!name || name.length === 0)
+      throw new Error(`ECSElement error: "name" is a required parameter(s)!`);
+
+    if (!type || type.length === 0)
+      throw new Error(`ECSElement error: "type" is required parameter(s)!`);
+
     if (!ECSElementTypes.includes(type))
       throw new Error(
         `ECSElement error: type ${type} is not and ECSElementType!`
       );
+
     this.#id = `_${Math.random().toString(36).substr(2, 9)}`;
     this.#type = type;
+    this.#name = name;
   }
 
-  /**
-   * readonly id
-   */
+  // readonly id
   get id() {
     return this.#id;
   }
 
-  /**
-   * readonly type
-   */
+  // readonly type
   get type() {
     return this.#type;
+  }
+
+  // readonly name
+  get name() {
+    return this.#name;
   }
 
   /**
