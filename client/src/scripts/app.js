@@ -144,5 +144,5 @@ const engine = new Engine(
 );
 
 export default () => {
-  // engine.start();
+  engine.start();
 };

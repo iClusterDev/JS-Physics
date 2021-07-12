@@ -1,51 +1,34 @@
 import Buffer from './Buffer';
 
+/**
+ * Game display (singleton)
+ * A DOM canvas object is required to initialize the game display.
+ * The DOM canvas id must be passed as parameter in the config object.
+ * Width & height are also required in order to keep
+ * the same aspect ratio on window "resize".
+ * The Display aspect ratio will be set based
+ * on the given width and height.
+ * By pressing "F" Display will go in fullscreen mode.
+ */
 class Display extends Buffer {
   #aspectRatio = null;
   #maxWidth = null;
 
-  /**
-   * Game display (singleton)
-   *
-   * A DOM canvas object is required to initialize the game display.
-   * The DOM canvas id must be passed as parameter in the config object.
-   * Width & height are also required in order to keep
-   * the same aspect ratio on window "resize".
-   * The Display aspect ratio will be set based
-   * on the given width and height.
-   * By pressing "F" Display will go in fullscreen mode.
-   * @param {*} config
-   * @param {*} config.id
-   * @param {*} config.width
-   * @param {*} config.height
-   * @param {*} config.color
-   *
-   * @getter width
-   * @getter height
-   * @getter canvas
-   * @method clear()
-   * @method draw()
-   */
-  constructor(config = {}) {
+  constructor(
+    { id = '', width = 832, height = 640, color = 'transparent' } = {
+      id: '',
+      width: 832,
+      height: 640,
+      color: 'transparent',
+    }
+  ) {
     if (Display.instance) {
       return Display.instance;
     } else {
-      const {
-        id = '',
-        width = 832,
-        height = 640,
-        color = 'transparent',
-      } = config;
-
       if (id.length === 0)
-        throw new Error(`Display: id is required parameters!`);
+        throw new Error(`Display: id is a required parameter!`);
 
-      super({
-        id,
-        width,
-        height,
-        color,
-      });
+      super({ id, width, height, color });
 
       this.#maxWidth = width;
       this.#aspectRatio = height / width;
@@ -57,6 +40,10 @@ class Display extends Buffer {
     }
   }
 
+  /**
+   * to initialize this display
+   * by just adding the required listeners
+   */
   #init() {
     window.addEventListener('keypress', (event) => {
       if (event.code === 'KeyF') {
@@ -72,6 +59,10 @@ class Display extends Buffer {
     });
   }
 
+  /**
+   * to add the fullscreen functionality to this display
+   * using the fullscreen api
+   */
   #toggleFullscreen() {
     if (!document.fullscreenElement) {
       this.canvas.requestFullscreen();
@@ -82,6 +73,9 @@ class Display extends Buffer {
     }
   }
 
+  /**
+   * to add resize functionality to this display
+   */
   #resize() {
     const { innerWidth: width, innerHeight: height } = window;
     let newWidth,
