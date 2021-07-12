@@ -5,9 +5,32 @@ import ECSElement from './ECSElement';
  * components container with id
  */
 class ECSEntity extends ECSElement {
-  constructor({ name = '' } = { name: '' }) {
+  constructor({ name = '', components = [] } = { name: '', components: [] }) {
     super(name, 'ECSEntity');
     this.components = {};
+    if (components.length > 0) {
+      let self = this;
+      components.forEach((component) => {
+        this.addComponent(component);
+      });
+    }
+  }
+
+  /**
+   * to initialize a component of this entity
+   * @param {*} componentName
+   * @param {*} data
+   * @returns
+   */
+  setComponent(componentName = '', data = {}) {
+    let componentNameStr = componentName.toString();
+    if (this.components.hasOwnProperty(componentNameStr)) {
+      for (const key in data) {
+        if (this.components[componentNameStr].hasOwnProperty(key))
+          this.components[componentNameStr][key] = data[key];
+      }
+    }
+    return this;
   }
 
   /**
@@ -18,8 +41,9 @@ class ECSEntity extends ECSElement {
   addComponent(component = null) {
     if (ECSElement.isECSElement(component, { ofType: 'ECSComponent' }))
       // TODO
-      // add component only if that's not already there
-      this.components[component.name] = component;
+      // this is a shallow copy
+      // deep copy needed here?
+      this.components[component.name] = { ...component };
     return this;
   }
 
@@ -29,9 +53,10 @@ class ECSEntity extends ECSElement {
    * @returns this
    */
   removeComponent(componentName = '') {
+    let componentNameStr = componentName.toString();
     if (
-      componentName.toString().length > 0 &&
-      this.components.hasOwnProperty(componentName.toString())
+      componentNameStr.length > 0 &&
+      this.components.hasOwnProperty(componentNameStr)
     ) {
       delete this.components[componentName];
     }

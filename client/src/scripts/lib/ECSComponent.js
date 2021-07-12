@@ -8,7 +8,10 @@ class ECSComponent extends ECSElement {
   constructor({ name = '', data = {} } = { name: '', data: {} }) {
     super(name, 'ECSComponent');
 
-    Object.assign(this, data);
+    // TODO
+    // this is a shallow copy
+    // deep copy needed here?
+    Object.assign(this, { ...data });
     Object.seal(this);
   }
 }
