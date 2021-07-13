@@ -22,6 +22,7 @@ class Store extends Emitter {
           throw new Error(`Use a mutation to set "${key}" to "${value}"`);
 
         Reflect.set(state, key, value);
+
         self.emit(`${key}-change`, self.state[key]);
         self.#status = 'resting';
         return true;
