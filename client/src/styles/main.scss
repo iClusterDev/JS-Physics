@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('../fonts/PressStart2P.woff2');
+}
+
+@keyframes whiteGreyColorAnimation {
+  0% {
+    color: white;
+  }
+  100% {
+    color: grey;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,10 +24,47 @@ body {
   overflow: hidden;
 }
 
-#canvas {
-  border: solid 1px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+// #canvas {
+//   border: solid 1px;
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+// }
+
+#game {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+
+  // classes
+  .hidden {
+    display: none;
+  }
+
+  .message {
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+
+    .message-text {
+      font-family: 'Press Start 2P';
+      color: white;
+      margin: 1rem;
+    }
+
+    .message-pulse {
+      animation-name: whiteGreyColorAnimation;
+      animation-duration: 0.5s;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+    }
+  }
+
+  // ids
 }
