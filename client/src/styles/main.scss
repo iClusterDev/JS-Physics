@@ -1,7 +1,7 @@
-// @font-face {
-//   font-family: 'Press Start 2P';
-//   src: url('../fonts/PressStart2P.woff2');
-// }
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('../fonts/PressStart2P.woff2');
+}
 
 // @keyframes whiteGreyColorAnimation {
 //   0% {
@@ -23,6 +23,14 @@ body {
   height: 100vh;
   overflow: hidden;
 }
+
+// #game {
+//   // height: 100%;
+//   // display: flex;
+//   // align-items: center;
+//   // justify-content: center;
+//   // background-color: black;
+// }
 
 // #canvas {
 //   border: solid 1px;
