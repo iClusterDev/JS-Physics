@@ -1,6 +1,6 @@
-import Store from '../lib/Store';
+import Game from '../lib/Game';
 
-const game = new Store({
+const game = new Game({
   state: {
     notifications: '',
     loading: true,

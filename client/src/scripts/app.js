@@ -1,4 +1,9 @@
-import game from './store/game';
+import game from './game';
+
+let context = document
+  .querySelector('gui-display')
+  .shadowRoot.querySelector('canvas')
+  .getContext('2d');
 
 const loadResources = () => {
   setTimeout(() => {
