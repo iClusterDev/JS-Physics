@@ -67,7 +67,7 @@ class Engine {
     }
 
     if (this.#updated) {
-      this.#render();
+      this.#render(this.#timeStep);
       this.#updated = false;
     }
   }

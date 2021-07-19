@@ -1,24 +1,29 @@
 import game from './game';
 import Engine from './lib/Engine';
 import Display from './lib/Display';
+import systems from './assets/systems';
+import init from './assets/entities';
 
 export default () => {
+  let entities = init();
+
+  /**
+   * Game listeners
+   * setup the keydown events
+   */
   window.addEventListener('keydown', (event) => {
     switch (event.code) {
       case 'Enter':
         game.dispatch('start');
-        // reset
-        // starts the engine here
         engine.start();
         break;
       case 'Escape':
         game.dispatch('quit');
-        // reset
-        // engine should be already stopped
+        entities = init();
+        display.context.clearRect(0, 0, display.width, display.height);
         break;
       case 'KeyP':
         game.dispatch('pause');
-        // stop the engine here
         engine.stop();
         break;
     }
@@ -28,8 +33,11 @@ export default () => {
     canvas: document.querySelector('gui-display').canvas,
   });
 
-  const engine = new Engine(
-    () => {},
-    () => {}
-  );
+  // TODO
+  // pass updateSystems, renderSystems as arguments for engine constructor
+  const engine = new Engine((elapsedTime) => {
+    systems.forEach((system) => {
+      system.next(elapsedTime, display.context, entities);
+    });
+  });
 };
