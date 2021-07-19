@@ -1,51 +1,60 @@
 import Game from '../lib/Game';
 
+// TODO
+// make messages in a constant?
+// ensure creation of new object when passed in
 const game = new Game({
   state: {
-    notifications: '',
-    loading: true,
-    running: false,
+    status: 'ready',
+    message: {
+      text: 'start a new game',
+      subtext: 'press enter',
+    },
   },
 
   actions: {
-    loading: (context, payload) => {
-      context.commit('loading', payload);
-    },
-
     start: (context) => {
-      context.commit('start');
-    },
-
-    stop: (context) => {
-      context.commit('stop');
+      let { status } = context.state;
+      if (status === 'ready' || status === 'paused') {
+        context.commit('setStatus', 'running');
+        context.commit('setMessage', { text: 'running...' });
+      }
     },
 
     pause: (context) => {
-      context.commit('pause');
+      let { status } = context.state;
+      if (status === 'running') {
+        context.commit('setStatus', 'paused');
+        context.commit('setMessage', {
+          text: 'press "enter" to resume',
+          subtext: 'or "esc" to quit',
+        });
+      }
+    },
+
+    quit: (context) => {
+      let { status } = context.state;
+      if (status === 'paused') {
+        context.commit('setStatus', 'ready');
+        context.commit('setMessage', {
+          text: 'start a new game',
+          subtext: 'press enter',
+        });
+      }
     },
   },
 
   mutations: {
-    loading: (state, payload) => {
-      state.loading = payload;
+    setStatus: (state, payload) => {
+      // TODO
+      // validate message payload
+      state.status = payload;
     },
 
-    start: (state) => {
-      if (!state.loading && !state.running) {
-        state.running = true;
-      }
-    },
-
-    stop: (state) => {
-      if (!state.loading && state.running) {
-        state.running = false;
-      }
-    },
-
-    pause: (state) => {
-      if (!state.loading && state.running) {
-        state.running = false;
-      }
+    setMessage: (state, payload) => {
+      // TODO
+      // validate message payload
+      state.message = payload;
     },
   },
 });

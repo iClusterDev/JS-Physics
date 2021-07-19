@@ -5,10 +5,6 @@ class GUIElement extends HTMLElement {
       document.createElement('template').content.cloneNode(true)
     );
   }
-
-  get element() {
-    return this.shadowRoot;
-  }
 }
 
 export default GUIElement;

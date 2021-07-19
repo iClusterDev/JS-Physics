@@ -10,8 +10,8 @@ class Buffer {
   #color;
 
   constructor(
-    { id = '', width = 0, height = 0, color = 'transparent' } = {
-      id: '',
+    { canvas = null, width = 0, height = 0, color = 'transparent' } = {
+      canvas: null,
       width: 0,
       height: 0,
       color: 'transparent',
@@ -20,10 +20,7 @@ class Buffer {
     if (width === 0 || height === 0)
       throw new Error(`Buffer: width and height are required parameters!`);
 
-    if (id.length > 0) {
-      const canvas = document.querySelector(id);
-      canvas.width = width;
-      canvas.height = height;
+    if (canvas) {
       this.#buffer = canvas.getContext('2d');
     } else {
       this.#buffer = new OffscreenCanvas(width, height).getContext('2d');

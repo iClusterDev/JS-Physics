@@ -15,8 +15,8 @@ class Display extends Buffer {
   #maxWidth = null;
 
   constructor(
-    { id = '', width = 832, height = 640, color = 'transparent' } = {
-      id: '',
+    { canvas = null, width = 832, height = 640, color = 'transparent' } = {
+      canvas: null,
       width: 832,
       height: 640,
       color: 'transparent',
@@ -25,10 +25,7 @@ class Display extends Buffer {
     if (Display.instance) {
       return Display.instance;
     } else {
-      if (id.length === 0)
-        throw new Error(`Display: id is a required parameter!`);
-
-      super({ id, width, height, color });
+      super({ canvas, width, height, color });
 
       this.#maxWidth = width;
       this.#aspectRatio = height / width;
@@ -45,6 +42,7 @@ class Display extends Buffer {
    * by just adding the required listeners
    */
   #init() {
+    this.#resize();
     window.addEventListener('keypress', (event) => {
       if (event.code === 'KeyF') {
         this.#toggleFullscreen();

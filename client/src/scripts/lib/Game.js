@@ -1,5 +1,7 @@
 import Emitter from './Emitter';
 
+// TODO
+// should be a singleton?
 class Game extends Emitter {
   #mutations;
   #actions;
