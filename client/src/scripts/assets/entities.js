@@ -25,6 +25,29 @@ const entities = [
       },
     ],
   },
+  {
+    name: 'enemy',
+    components: [components.rect, components.graphics],
+    defaults: [
+      {
+        component: 'rect',
+        data: {
+          x: 600,
+          y: 200,
+          vx: 0.0,
+          vy: 0.5,
+          width: 15,
+          height: 100,
+        },
+      },
+      {
+        component: 'graphics',
+        data: {
+          color: 'white',
+        },
+      },
+    ],
+  },
 ];
 
 const init = () => {

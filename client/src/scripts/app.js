@@ -4,6 +4,14 @@ import Display from './lib/Display';
 import systems from './assets/systems';
 import init from './assets/entities';
 
+// create a new game
+// game.init()
+//  load resources (images, sounds)
+//  set listeners
+//  set display
+//  set engine
+//  load maps
+
 export default () => {
   let entities = init();
 

@@ -1,11 +1,6 @@
 import game from '../game';
 import GUIElement from './GUIElement';
 
-/**
- * ------------------------------------------------------
- * messaging system
- * ------------------------------------------------------
- */
 class GUIMessage extends GUIElement {
   constructor() {
     super();
@@ -40,6 +35,7 @@ class GUIMessage extends GUIElement {
             .message-text {
               font-size: 1rem;
               margin-bottom: 1rem;
+              text-transform: uppercase;
             }
 
             .message-subtext {
