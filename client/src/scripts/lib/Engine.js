@@ -20,7 +20,7 @@ class Engine {
    * @param {Function} update - update function
    * @param {Function} render - render function
    *
-   * @method srart()
+   * @method start()
    * @method stop()
    */
   constructor(update = () => {}, render = () => {}) {

@@ -1,4 +1,4 @@
-import ECSEntity from '../lib/ECSEntity';
+// import ECSEntity from '../lib/ECSEntity';
 import components from './components';
 
 const entities = [
@@ -50,16 +50,16 @@ const entities = [
   },
 ];
 
-const init = () => {
-  return entities.map((entity) => {
-    let { name, components, defaults } = entity;
-    let ecsEntity = new ECSEntity({ name, components });
-    defaults.forEach((entry) => {
-      let { component, data } = entry;
-      ecsEntity.setComponent(component, data);
-    });
-    return ecsEntity;
-  });
-};
+// const init = () => {
+//   return entities.map((entity) => {
+//     let { name, components, defaults } = entity;
+//     let ecsEntity = new ECSEntity({ name, components });
+//     defaults.forEach((entry) => {
+//       let { component, data } = entry;
+//       ecsEntity.setComponent(component, data);
+//     });
+//     return ecsEntity;
+//   });
+// };
 
-export default init;
+export default entities;

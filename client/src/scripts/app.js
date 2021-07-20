@@ -1,20 +1,62 @@
 import game from './game';
 import Engine from './lib/Engine';
 import Display from './lib/Display';
-import systems from './assets/systems';
-import init from './assets/entities';
 
-// create a new game
-// game.init()
-//  load resources (images, sounds)
-//  set listeners
-//  set display
-//  set engine
-//  load maps
+import systems from './assets/systems';
+import entities from './assets/entities';
+import ECSEntity from './lib/ECSEntity';
+import ECSSystem from './lib/ECSSystem';
+import ECSComponent from './lib/ECSComponent';
+
+// Level
+// → entities
+// → systems
+// → id
+class Level {
+  constructor({ entities, systems } = { entities, systems }) {
+    const loadEntities = (entities) => {
+      return entities.map((entity) => {
+        let { name, components, defaults } = entity;
+        let ecsEntity = new ECSEntity({ name, components });
+        defaults.forEach((entry) => {
+          let { component, data } = entry;
+          ecsEntity.setComponent(component, data);
+        });
+        return ecsEntity;
+      });
+    };
+
+    const loadSystems = (entities, systems) => {
+      let ecsEntities = loadEntities(entities);
+      return systems.map((system) => {
+        let { name, use, onNext } = system;
+        let ecsSystem = new ECSSystem({ name, onNext });
+        let ecsTargets = [];
+        use.forEach((componentName) => {
+          ecsEntities.forEach((entity) => {
+            if (entity.components.hasOwnProperty(componentName)) {
+              ecsTargets.push(entity);
+            }
+          });
+        });
+        return { ecsTargets, ecsSystem };
+      });
+    };
+
+    this.systems = loadSystems(entities, systems);
+  }
+
+  next(elapsedTime, context) {
+    this.systems.forEach((item) =>
+      item.ecsSystem.next(elapsedTime, context, item.ecsTargets)
+    );
+  }
+}
+
+let level = new Level({ entities, systems });
 
 export default () => {
-  let entities = init();
-
+  // let entities = init();
   /**
    * Game listeners
    * setup the keydown events
@@ -29,7 +71,7 @@ export default () => {
       case 'Escape':
         game.dispatch('quit');
         if (status === 'paused') {
-          entities = init();
+          // entities = init();
           display.context.clearRect(0, 0, display.width, display.height);
         }
         break;
@@ -40,6 +82,10 @@ export default () => {
     }
   });
 
+  /**
+   * hook to the display context
+   * this is the destination canvas
+   */
   const display = new Display({
     canvas: document.querySelector('gui-display').canvas,
   });
@@ -47,8 +93,9 @@ export default () => {
   // TODO
   // pass updateSystems, renderSystems as arguments for engine constructor
   const engine = new Engine((elapsedTime) => {
-    systems.forEach((system) => {
-      system.next(elapsedTime, display.context, entities);
-    });
+    level.next(elapsedTime, display.context);
+    // systems.forEach((system) => {
+    //   system.next(elapsedTime, display.context, entities);
+    // });
   });
 };
