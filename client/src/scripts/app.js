@@ -1,101 +1,60 @@
-import game from './game';
-import Engine from './lib/Engine';
-import Display from './lib/Display';
+// BOUNCER
+// player needs to bounce back the bouncing square
+// every bounce back score increase
+// win condition: score go up to 10
+// loose condition: bouncing square touches the ground
+import ecsConfig from './config/ecs.config';
+import levelsConfig from './config/levels.config';
 
-import systems from './assets/systems';
-import entities from './assets/entities';
-import ECSEntity from './lib/ECSEntity';
-import ECSSystem from './lib/ECSSystem';
 import ECSComponent from './lib/ECSComponent';
+import ECSSystem from './lib/ECSSystem';
+import ECSEntity from './lib/ECSEntity';
 
-// Level
-// → entities
-// → systems
-// → id
-class Level {
-  constructor({ entities, systems } = { entities, systems }) {
-    const loadEntities = (entities) => {
-      return entities.map((entity) => {
-        let { name, components, defaults } = entity;
-        let ecsEntity = new ECSEntity({ name, components });
-        defaults.forEach((entry) => {
-          let { component, data } = entry;
-          ecsEntity.setComponent(component, data);
-        });
-        return ecsEntity;
-      });
-    };
+const loadSystemsFromMap = (ecsConfig, map) => {
+  // sort the components first
+  let components = {};
+  ecsConfig.components.forEach((component) => {
+    let { name, data } = component;
+    components[name] = new ECSComponent({ name, data });
+  });
 
-    const loadSystems = (entities, systems) => {
-      let ecsEntities = loadEntities(entities);
-      return systems.map((system) => {
-        let { name, use, onNext } = system;
-        let ecsSystem = new ECSSystem({ name, onNext });
-        let ecsTargets = [];
-        use.forEach((componentName) => {
-          ecsEntities.forEach((entity) => {
-            if (entity.components.hasOwnProperty(componentName)) {
-              ecsTargets.push(entity);
-            }
-          });
-        });
-        return { ecsTargets, ecsSystem };
-      });
-    };
+  // now sort the entities
+  let entities = [];
+  for (let row = 0; row < map.length; row++) {
+    for (let col = 0; col < map[row].length; col++) {
+      const symbol = map[row][col];
+      if (symbol !== '.') {
+        const entityConfig = ecsConfig.entities.find(
+          (entity) => entity.symbol === symbol
+        );
+        if (entityConfig) {
+        }
+      }
+    }
+  }
+};
 
-    this.systems = loadSystems(entities, systems);
+class GAMELevelLayer {
+  constructor(
+    { name, columns, rows, unit, map } = { name, columns, rows, unit, map }
+  ) {
+    this.name = name;
+    this.canvas = new OffscreenCanvas(columns * unit, rows * unit);
+    this.systems = loadSystemsFromMap(ecsConfig, map);
   }
 
-  next(elapsedTime, context) {
-    this.systems.forEach((item) =>
-      item.ecsSystem.next(elapsedTime, context, item.ecsTargets)
-    );
+  get context() {
+    return this.canvas.getContext('2d');
   }
 }
 
-let level = new Level({ entities, systems });
+class GAMELevel {
+  constructor({ id, layers } = { id, layers }) {
+    this.id = id;
+    this.layers = layers.map((layer) => new GAMELevelLayer({ ...layer }));
+  }
+}
 
-export default () => {
-  // let entities = init();
-  /**
-   * Game listeners
-   * setup the keydown events
-   */
-  window.addEventListener('keydown', (event) => {
-    let { status } = game.state;
-    switch (event.code) {
-      case 'Enter':
-        game.dispatch('start');
-        if (status === 'ready' || status === 'paused') engine.start();
-        break;
-      case 'Escape':
-        game.dispatch('quit');
-        if (status === 'paused') {
-          // entities = init();
-          display.context.clearRect(0, 0, display.width, display.height);
-        }
-        break;
-      case 'KeyP':
-        game.dispatch('pause');
-        if (status === 'running') engine.stop();
-        break;
-    }
-  });
+const gameLevels = levelsConfig.map((level) => new GAMELevel({ ...level }));
 
-  /**
-   * hook to the display context
-   * this is the destination canvas
-   */
-  const display = new Display({
-    canvas: document.querySelector('gui-display').canvas,
-  });
-
-  // TODO
-  // pass updateSystems, renderSystems as arguments for engine constructor
-  const engine = new Engine((elapsedTime) => {
-    level.next(elapsedTime, display.context);
-    // systems.forEach((system) => {
-    //   system.next(elapsedTime, display.context, entities);
-    // });
-  });
-};
+export default () => {};
