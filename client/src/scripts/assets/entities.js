@@ -4,7 +4,7 @@ import components from './components';
 const entities = [
   {
     name: 'player',
-    components: [components.componentRect, components.componentGraphics],
+    components: [components.rect, components.graphics],
     defaults: [
       {
         component: 'rect',

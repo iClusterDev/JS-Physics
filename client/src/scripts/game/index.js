@@ -17,7 +17,7 @@ const game = new Game({
       let { status } = context.state;
       if (status === 'ready' || status === 'paused') {
         context.commit('setStatus', 'running');
-        context.commit('setMessage', { text: 'running...' });
+        context.commit('setMessage', {});
       }
     },
 

@@ -12,19 +12,22 @@ export default () => {
    * setup the keydown events
    */
   window.addEventListener('keydown', (event) => {
+    let { status } = game.state;
     switch (event.code) {
       case 'Enter':
         game.dispatch('start');
-        engine.start();
+        if (status === 'ready' || status === 'paused') engine.start();
         break;
       case 'Escape':
         game.dispatch('quit');
-        entities = init();
-        display.context.clearRect(0, 0, display.width, display.height);
+        if (status === 'paused') {
+          entities = init();
+          display.context.clearRect(0, 0, display.width, display.height);
+        }
         break;
       case 'KeyP':
         game.dispatch('pause');
-        engine.stop();
+        if (status === 'running') engine.stop();
         break;
     }
   });

@@ -1,7 +1,7 @@
 import ECSComponent from '../lib/ECSComponent';
 
 const components = {
-  componentRect: new ECSComponent({
+  rect: new ECSComponent({
     name: 'rect',
     data: {
       x: 0,
@@ -13,7 +13,7 @@ const components = {
     },
   }),
 
-  componentGraphics: new ECSComponent({
+  graphics: new ECSComponent({
     name: 'graphics',
     data: {
       color: 'transparent',
