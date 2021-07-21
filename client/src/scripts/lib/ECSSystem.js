@@ -8,12 +8,16 @@ class ECSSystem extends ECSElement {
   #onNext;
 
   constructor(
-    { name = '', onNext = (...params) => {} } = {
+    { name = '', use = [], ignore = [], onNext = (...params) => {} } = {
       name: '',
+      use: [],
+      ignore: [],
       onNext: (...params) => {},
     }
   ) {
     super(name, 'ECSSystem');
+    this.use = use;
+    this.ignore = ignore;
     this.#onNext = onNext;
   }
 

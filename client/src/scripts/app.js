@@ -3,58 +3,73 @@
 // every bounce back score increase
 // win condition: score go up to 10
 // loose condition: bouncing square touches the ground
-import ecsConfig from './config/ecs.config';
-import levelsConfig from './config/levels.config';
+import { entities, systems } from './config/ecs.config';
+import display from './config/env.config';
 
-import ECSComponent from './lib/ECSComponent';
-import ECSSystem from './lib/ECSSystem';
-import ECSEntity from './lib/ECSEntity';
+// entityPicker
+class Picker {
+  #filters = [];
 
-const loadSystemsFromMap = (ecsConfig, map) => {
-  // sort the components first
-  let components = {};
-  ecsConfig.components.forEach((component) => {
-    let { name, data } = component;
-    components[name] = new ECSComponent({ name, data });
-  });
-
-  // now sort the entities
-  let entities = [];
-  for (let row = 0; row < map.length; row++) {
-    for (let col = 0; col < map[row].length; col++) {
-      const symbol = map[row][col];
-      if (symbol !== '.') {
-        const entityConfig = ecsConfig.entities.find(
-          (entity) => entity.symbol === symbol
-        );
-        if (entityConfig) {
-        }
-      }
-    }
-  }
-};
-
-class GAMELevelLayer {
-  constructor(
-    { name, columns, rows, unit, map } = { name, columns, rows, unit, map }
-  ) {
-    this.name = name;
-    this.canvas = new OffscreenCanvas(columns * unit, rows * unit);
-    this.systems = loadSystemsFromMap(ecsConfig, map);
+  constructor({ include = [], exclude = [] } = { include: [], exclude: [] }) {
+    this.include([...include]);
+    this.exclude([...exclude]);
   }
 
-  get context() {
-    return this.canvas.getContext('2d');
+  #evaluate(obj) {
+    return this.#filters.reduce((result, filter) => {
+      result *= filter(obj);
+      return result;
+    }, true);
   }
-}
 
-class GAMELevel {
-  constructor({ id, layers } = { id, layers }) {
-    this.id = id;
-    this.layers = layers.map((layer) => new GAMELevelLayer({ ...layer }));
+  include(keys = []) {
+    keys.forEach((key) => {
+      this.#filters.push((obj) => obj.components.hasOwnProperty(key));
+    });
+    return this;
+  }
+
+  exclude(keys = []) {
+    keys.forEach((key) => {
+      this.#filters.push((obj) => !obj.components.hasOwnProperty(key));
+    });
+    return this;
+  }
+
+  pick(data) {
+    if (!Array.isArray(data))
+      throw new Error('Picker: invalid input data type (must be an Array)');
+    let self = this;
+    return data.reduce((result, dataItem) => {
+      if (self.#evaluate(dataItem)) result.push(dataItem);
+      return result;
+    }, []);
   }
 }
 
-const gameLevels = levelsConfig.map((level) => new GAMELevel({ ...level }));
+// ECSLevel
+class ECSLevel {
+  #systems;
+
+  constructor({ entities = [], systems = [] } = { entities: [], systems: [] }) {
+    this.id = 0;
+    this.#systems = systems.map((system) => {
+      let { use = [], ignore = [] } = system;
+      let targets = new Picker({
+        include: [...use],
+        exclude: [...ignore],
+      }).pick(entities);
+      return { targets, next: system.next };
+    });
+  }
+
+  next(elapsedTime, store, context) {
+    this.#systems.forEach((system) =>
+      system.next(elapsedTime, store, context, system.targets)
+    );
+  }
+}
+
+const level = new ECSLevel({ entities, systems });
 
 export default () => {};
