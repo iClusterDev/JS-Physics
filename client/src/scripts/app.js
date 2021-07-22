@@ -9,33 +9,29 @@ import engine from './config/engine.config';
 import level from './config/level.config';
 import store from './config/store.config';
 
-engine
-  .onUpdate(() => {
-    console.log('update');
-  })
-  .onRender(() => {
-    console.log('render');
+export default () => {
+  window.addEventListener('keydown', (event) => {
+    let { status } = store.state;
+    switch (event.code) {
+      case 'Enter':
+        store.dispatch('start');
+        if (status === 'ready' || status === 'paused') engine.start();
+        break;
+      case 'Escape':
+        store.dispatch('quit');
+        if (status === 'paused') {
+          // entities = init();
+          display.context.clearRect(0, 0, display.width, display.height);
+        }
+        break;
+      case 'KeyP':
+        store.dispatch('pause');
+        if (status === 'running') engine.stop();
+        break;
+    }
   });
 
-export default () => {
-  // window.addEventListener('keydown', (event) => {
-  //   let { status } = game.state;
-  //   switch (event.code) {
-  //     case 'Enter':
-  //       game.dispatch('start');
-  //       if (status === 'ready' || status === 'paused') engine.start();
-  //       break;
-  //     case 'Escape':
-  //       game.dispatch('quit');
-  //       if (status === 'paused') {
-  //         // entities = init();
-  //         display.context.clearRect(0, 0, display.width, display.height);
-  //       }
-  //       break;
-  //     case 'KeyP':
-  //       game.dispatch('pause');
-  //       if (status === 'running') engine.stop();
-  //       break;
-  //   }
-  // });
+  engine.onUpdate((elapsedTime) => {
+    level.next(elapsedTime, store, display.context);
+  });
 };

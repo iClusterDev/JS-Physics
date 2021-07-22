@@ -25,6 +25,22 @@ const components = {
 
 const entities = [
   new ECSEntity({
+    name: 'player',
+    components: [components.rect, components.graphics],
+  })
+    .setComponent('rect', {
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      width: 100,
+      height: 10,
+    })
+    .setComponent('graphics', {
+      color: 'red',
+    }),
+
+  new ECSEntity({
     name: 'ball',
     components: [components.rect, components.graphics],
   })

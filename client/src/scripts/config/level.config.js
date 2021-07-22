@@ -53,15 +53,20 @@ class ECSLevel {
         include: [...use],
         exclude: [...ignore],
       }).pick(entities);
-      return { targets, next: system.next };
+
+      return { targets, system };
     });
   }
 
   next(elapsedTime, store, context) {
-    this.#systems.forEach((system) =>
-      system.next(elapsedTime, store, context, system.targets)
-    );
+    this.#systems.forEach((item) => {
+      let { targets, system } = item;
+      system.next(elapsedTime, store, context, targets);
+    });
   }
 }
 
-export default new ECSLevel(ecsConfig.entities, ecsConfig.systems);
+export default new ECSLevel({
+  entities: ecsConfig.entities,
+  systems: ecsConfig.systems,
+});

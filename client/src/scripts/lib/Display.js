@@ -2,8 +2,9 @@ import Buffer from './Buffer';
 
 /**
  * Game display (singleton)
+ *
  * A DOM canvas object is required to initialize the game display.
- * The DOM canvas id must be passed as parameter in the config object.
+ * The DOM canvas must be passed as parameter in the config object.
  * Width & height are also required in order to keep
  * the same aspect ratio on window "resize".
  * The Display aspect ratio will be set based

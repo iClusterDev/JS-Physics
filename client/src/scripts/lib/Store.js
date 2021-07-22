@@ -1,39 +1,58 @@
 import Emitter from './Emitter';
 
-// TODO
-// should be a singleton?
+/**
+ * Game store (singleton)
+ *
+ * A configurable state management system.
+ * Inherits from Emitter
+ */
 class Store extends Emitter {
   #mutations;
   #actions;
   #status;
 
-  constructor(config = {}) {
-    super();
-    const { state = {}, actions = {}, mutations = {} } = config;
-    this.#mutations = mutations;
-    this.#actions = actions;
-    this.#status = 'resting';
+  constructor(
+    { state = {}, actions = {}, mutations = {} } = {
+      state: {},
+      actions: {},
+      mutations: {},
+    }
+  ) {
+    if (Store.instance) {
+      return Store.instance;
+    } else {
+      super();
+      this.#mutations = mutations;
+      this.#actions = actions;
+      this.#status = 'resting';
 
-    const self = this;
-    self.state = state;
-    self.state = new Proxy(self.state, {
-      set: function (state, key, value) {
-        if (!state.hasOwnProperty(key))
-          throw new Error(`The key "${key}" is not declared`);
-        if (self.#status !== 'mutation')
-          throw new Error(`Use a mutation to set "${key}" to "${value}"`);
+      const self = this;
+      self.state = state;
+      self.state = new Proxy(self.state, {
+        set: function (state, key, value) {
+          if (!state.hasOwnProperty(key))
+            throw new Error(`The key "${key}" is not declared`);
+          if (self.#status !== 'mutation')
+            throw new Error(`Use a mutation to set "${key}" to "${value}"`);
 
-        Reflect.set(state, key, value);
+          Reflect.set(state, key, value);
+          self.emit(`${key}-change`, self.state[key]);
+          self.#status = 'resting';
+          return true;
+        },
+      });
 
-        self.emit(`${key}-change`, self.state[key]);
-        self.#status = 'resting';
-        return true;
-      },
-    });
-
-    Object.freeze(this);
+      Object.freeze(this);
+      return this;
+    }
   }
 
+  /**
+   * To dispatch a configured action
+   * @param {*} actionKey
+   * @param {*} payload
+   * @returns
+   */
   dispatch(actionKey, payload) {
     if (typeof this.#actions[actionKey] !== 'function')
       throw new Error(`Action ${actionKey} doesn't exist!`);
@@ -42,6 +61,12 @@ class Store extends Emitter {
     return true;
   }
 
+  /**
+   * To commit a configured mutation
+   * @param {*} mutationKey
+   * @param {*} payload
+   * @returns
+   */
   commit(mutationKey, payload) {
     if (typeof this.#mutations[mutationKey] !== 'function')
       throw new Error(`Mutation ${mutationKey} doesn't exist!`);
