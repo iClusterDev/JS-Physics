@@ -2,7 +2,7 @@ import Emitter from './Emitter';
 
 // TODO
 // should be a singleton?
-class Game extends Emitter {
+class Store extends Emitter {
   #mutations;
   #actions;
   #status;
@@ -51,4 +51,4 @@ class Game extends Emitter {
   }
 }
 
-export default Game;
+export default Store;

@@ -72,6 +72,16 @@ class Engine {
     }
   }
 
+  onUpdate(onUpdateFunc = () => {}) {
+    this.#update = onUpdateFunc;
+    return this;
+  }
+
+  onRender(onRenderFunc = () => {}) {
+    this.#render = onRenderFunc;
+    return this;
+  }
+
   start() {
     this.#currentTime = window.performance.now();
     this.#frameRequest = window.requestAnimationFrame((timestamp) => {

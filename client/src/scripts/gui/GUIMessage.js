@@ -1,18 +1,18 @@
-import game from '../game';
+import store from '../config/store.config';
 import GUIElement from './GUIElement';
 
 class GUIMessage extends GUIElement {
   constructor() {
     super();
-    this.message = game.state.message;
+    this.message = store.state.message;
 
     this.create();
     this.render();
   }
 
   create() {
-    game.on('message-change', () => {
-      this.message = game.state.message;
+    store.on('message-change', () => {
+      this.message = store.state.message;
       this.render();
     });
   }

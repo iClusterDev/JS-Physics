@@ -5,7 +5,17 @@
 // loose condition: bouncing square touches the ground
 // import { entities, systems } from './config/ecs.config';
 import display from './config/display.config';
+import engine from './config/engine.config';
 import level from './config/level.config';
+import store from './config/store.config';
+
+engine
+  .onUpdate(() => {
+    console.log('update');
+  })
+  .onRender(() => {
+    console.log('render');
+  });
 
 export default () => {
   // window.addEventListener('keydown', (event) => {
