@@ -1,6 +1,11 @@
+import globalConfig from './global.config';
 import ecsConfig from './ecs.config';
+import Buffer from '../lib/Buffer';
 
-// entityPicker
+/**
+ * TODO
+ * this should be named better?
+ */
 class Picker {
   #filters = [];
 
@@ -43,10 +48,18 @@ class Picker {
 
 // ECSLevel
 class ECSLevel {
+  #buffer;
   #systems;
 
-  constructor({ entities = [], systems = [] } = { entities: [], systems: [] }) {
-    this.id = 0;
+  constructor(
+    { width = 832, height = 640, systems = [], entities = [] } = {
+      width: 832,
+      height: 640,
+      systems: [],
+      entities: [],
+    }
+  ) {
+    this.#buffer = new Buffer({ width, height });
     this.#systems = systems.map((system) => {
       let { use = [], ignore = [] } = system;
       let targets = new Picker({
@@ -58,15 +71,23 @@ class ECSLevel {
     });
   }
 
+  get buffer() {
+    return this.#buffer.canvas;
+  }
+
   next(elapsedTime, store, context) {
-    this.#systems.forEach((item) => {
-      let { targets, system } = item;
-      system.next(elapsedTime, store, context, targets);
+    this.#buffer.clear();
+    this.#systems.forEach((systemElement) => {
+      let { targets, system } = systemElement;
+      system.next(elapsedTime, store, this.#buffer.context, targets);
     });
   }
 }
 
+let { display } = globalConfig;
 export default new ECSLevel({
-  entities: ecsConfig.entities,
+  width: display.width,
+  height: display.height,
   systems: ecsConfig.systems,
+  entities: ecsConfig.entities,
 });

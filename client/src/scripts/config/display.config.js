@@ -1,7 +1,9 @@
+import globalConfig from './global.config';
 import Display from '../lib/Display';
 
+let { display } = globalConfig;
 export default new Display({
   canvas: document.querySelector('gui-display').canvas,
-  height: 640,
-  width: 832,
+  height: display.height,
+  width: display.width,
 });

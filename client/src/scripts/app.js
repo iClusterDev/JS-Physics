@@ -31,7 +31,18 @@ export default () => {
     }
   });
 
-  engine.onUpdate((elapsedTime) => {
-    level.next(elapsedTime, store, display.context);
-  });
+  engine
+    .onUpdate((elapsedTime) => {
+      display.clear();
+      level.next(elapsedTime, store, display.context);
+    })
+    .onRender(() => {
+      display.context.drawImage(
+        level.buffer,
+        0,
+        0,
+        level.buffer.width,
+        level.buffer.height
+      );
+    });
 };

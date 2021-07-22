@@ -53,6 +53,7 @@ class Buffer {
   get height() {
     return this.#buffer.canvas.height;
   }
+
   // color getter
   get color() {
     return this.#color;
@@ -62,6 +63,10 @@ class Buffer {
   set color(color = 'transparent') {
     this.#buffer.fillStyle = color;
     this.#buffer.fillRect(0, 0, this.width, this.height);
+  }
+
+  clear() {
+    this.#buffer.clearRect(0, 0, this.width, this.height);
   }
 }
 
