@@ -1,5 +1,5 @@
 import globalConfig from './global.config';
-import ecsConfig from './ecs.config';
+import actorsConfig from './actors.config';
 import Buffer from '../lib/Buffer';
 
 /**
@@ -47,8 +47,7 @@ class Picker {
 }
 
 // ECSLevel
-class ECSLevel {
-  #buffer;
+class ECSLevel extends Buffer {
   #systems;
 
   constructor(
@@ -59,7 +58,7 @@ class ECSLevel {
       entities: [],
     }
   ) {
-    this.#buffer = new Buffer({ width, height });
+    super({ width, height });
     this.#systems = systems.map((system) => {
       let { use = [], ignore = [] } = system;
       let targets = new Picker({
@@ -72,22 +71,23 @@ class ECSLevel {
   }
 
   get buffer() {
-    return this.#buffer.canvas;
+    return this.canvas;
   }
 
   next(elapsedTime, store, context) {
-    this.#buffer.clear();
+    this.clear();
     this.#systems.forEach((systemElement) => {
       let { targets, system } = systemElement;
-      system.next(elapsedTime, store, this.#buffer.context, targets);
+      system.next(elapsedTime, store, this.context, targets);
     });
   }
 }
 
-let { display } = globalConfig;
+let { width, height } = globalConfig.display;
+let { entities, systems } = actorsConfig;
 export default new ECSLevel({
-  width: display.width,
-  height: display.height,
-  systems: ecsConfig.systems,
-  entities: ecsConfig.entities,
+  width: width,
+  height: height,
+  systems: systems,
+  entities: entities,
 });

@@ -1,11 +1,9 @@
+import globalConfig from './global.config';
 import Store from '../lib/Store';
 
 const state = {
   status: 'ready',
-  message: {
-    text: 'start a new game',
-    subtext: 'press enter',
-  },
+  message: globalConfig.message.start,
 };
 
 const actions = {
@@ -21,10 +19,7 @@ const actions = {
     let { status } = context.state;
     if (status === 'running') {
       context.commit('setStatus', 'paused');
-      context.commit('setMessage', {
-        text: 'press "enter" to resume',
-        subtext: 'or "esc" to quit',
-      });
+      context.commit('setMessage', globalConfig.message.pause);
     }
   },
 
@@ -32,10 +27,7 @@ const actions = {
     let { status } = context.state;
     if (status === 'paused') {
       context.commit('setStatus', 'ready');
-      context.commit('setMessage', {
-        text: 'start a new game',
-        subtext: 'press enter',
-      });
+      context.commit('setMessage', globalConfig.message.start);
     }
   },
 };
@@ -50,7 +42,4 @@ const mutations = {
   },
 };
 
-// TODO
-// make messages in a constant?
-// ensure creation of new object when passed in
 export default new Store({ state, actions, mutations });

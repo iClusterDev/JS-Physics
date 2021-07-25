@@ -1,3 +1,5 @@
+import globalConfig from './global.config';
+import Controller from '../lib/Controller';
 import ECSComponent from '../lib/ECSComponent';
 import ECSSystem from '../lib/ECSSystem';
 import ECSEntity from '../lib/ECSEntity';
@@ -15,6 +17,16 @@ const components = {
     },
   }),
 
+  input: new ECSComponent({
+    name: 'input',
+    data: {
+      controller: new Controller([
+        { code: 'KeyA', action: 'left' },
+        { code: 'KeyD', action: 'right' },
+      ]),
+    },
+  }),
+
   graphics: new ECSComponent({
     name: 'graphics',
     data: {
@@ -26,12 +38,12 @@ const components = {
 const entities = [
   new ECSEntity({
     name: 'player',
-    components: [components.rect, components.graphics],
+    components: [components.rect, components.input, components.graphics],
   })
     .setComponent('rect', {
-      x: 0,
-      y: 0,
-      vx: 0,
+      x: globalConfig.display.width / 2 - 100 / 2,
+      y: globalConfig.display.height - 20,
+      vx: 0.5,
       vy: 0,
       width: 100,
       height: 10,
@@ -59,8 +71,23 @@ const entities = [
 
 const systems = [
   new ECSSystem({
+    name: 'input',
+    use: ['rect', 'input'],
+    onNext: (elapsedTime, store, context, entities) => {
+      entities.forEach((target) => {
+        let { rect, input } = target.components;
+        let deltaX = 0;
+        if (input.controller.left.isActive) deltaX = -rect.vx * elapsedTime;
+        if (input.controller.right.isActive) deltaX = rect.vx * elapsedTime;
+        rect.x += deltaX;
+      });
+    },
+  }),
+
+  new ECSSystem({
     name: 'move',
     use: ['rect'],
+    ignore: ['input'],
     onNext: (elapsedTime, store, context, entities) => {
       entities.forEach((target) => {
         let { rect } = target.components;
@@ -75,6 +102,7 @@ const systems = [
   new ECSSystem({
     name: 'bounce',
     use: ['rect'],
+    ignore: ['input'],
     onNext: (elapsedTime, store, context, entities) => {
       entities.forEach((target) => {
         let { rect } = target.components;
