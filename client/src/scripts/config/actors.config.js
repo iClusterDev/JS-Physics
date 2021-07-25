@@ -10,8 +10,6 @@ const components = {
     data: {
       x: 0,
       y: 0,
-      vx: 0,
-      vy: 0,
       width: 0,
       height: 0,
     },
@@ -27,6 +25,15 @@ const components = {
     },
   }),
 
+  physics: new ECSComponent({
+    name: 'physics',
+    data: {
+      vx: 0,
+      vy: 0,
+      solid: false,
+    },
+  }),
+
   graphics: new ECSComponent({
     name: 'graphics',
     data: {
@@ -38,7 +45,13 @@ const components = {
 const entities = [
   new ECSEntity({
     name: 'player',
-    components: [components.rect, components.input, components.graphics],
+    // prettier-ignore
+    components: [
+      components.rect,
+      components.input,
+      components.physics,
+      components.graphics,
+    ],
   })
     .setComponent('rect', {
       x: globalConfig.display.width / 2 - 100 / 2,
@@ -48,13 +61,23 @@ const entities = [
       width: 100,
       height: 10,
     })
+    .setComponent('physics', {
+      vx: 0.5,
+      vy: 0,
+      solid: true,
+    })
     .setComponent('graphics', {
       color: 'red',
     }),
 
   new ECSEntity({
     name: 'ball',
-    components: [components.rect, components.graphics],
+    // prettier-ignore
+    components: [
+      components.rect, 
+      components.physics, 
+      components.graphics
+    ],
   })
     .setComponent('rect', {
       x: 100,
@@ -64,6 +87,11 @@ const entities = [
       width: 50,
       height: 50,
     })
+    .setComponent('physics', {
+      vx: 0.4,
+      vy: 0.4,
+      solid: true,
+    })
     .setComponent('graphics', {
       color: 'white',
     }),
@@ -72,27 +100,36 @@ const entities = [
 const systems = [
   new ECSSystem({
     name: 'input',
-    use: ['rect', 'input'],
+    use: ['rect', 'input', 'physics'],
     onNext: (elapsedTime, store, context, entities) => {
       entities.forEach((target) => {
-        let { rect, input } = target.components;
+        let { rect, input, physics } = target.components;
+
+        // computes deltas
         let deltaX = 0;
-        if (input.controller.left.isActive) deltaX = -rect.vx * elapsedTime;
-        if (input.controller.right.isActive) deltaX = rect.vx * elapsedTime;
-        rect.x += deltaX;
+        if (input.controller.left.isActive) deltaX = -physics.vx * elapsedTime;
+        if (input.controller.right.isActive) deltaX = physics.vx * elapsedTime;
+
+        // check for boudary collision & resolve
+        let newRectX = rect.x + deltaX;
+        if (newRectX < 0) newRectX = 0.1;
+        if (newRectX + rect.width > context.canvas.width)
+          newRectX = context.canvas.width - rect.width - 0.1;
+
+        rect.x = newRectX;
       });
     },
   }),
 
   new ECSSystem({
     name: 'move',
-    use: ['rect'],
+    use: ['rect', 'physics'],
     ignore: ['input'],
     onNext: (elapsedTime, store, context, entities) => {
       entities.forEach((target) => {
-        let { rect } = target.components;
-        let deltaX = rect.vx * elapsedTime;
-        let deltaY = rect.vy * elapsedTime;
+        let { rect, physics } = target.components;
+        let deltaX = physics.vx * elapsedTime;
+        let deltaY = physics.vy * elapsedTime;
         rect.x += deltaX;
         rect.y += deltaY;
       });
@@ -101,16 +138,16 @@ const systems = [
 
   new ECSSystem({
     name: 'bounce',
-    use: ['rect'],
+    use: ['rect', 'physics'],
     ignore: ['input'],
     onNext: (elapsedTime, store, context, entities) => {
       entities.forEach((target) => {
-        let { rect } = target.components;
+        let { rect, physics } = target.components;
         if (rect.x < 0 || rect.x + rect.width > context.canvas.width) {
-          rect.vx = -rect.vx;
+          physics.vx = -physics.vx;
         }
         if (rect.y < 0 || rect.y + rect.height > context.canvas.height) {
-          rect.vy = -rect.vy;
+          physics.vy = -physics.vy;
         }
       });
     },
