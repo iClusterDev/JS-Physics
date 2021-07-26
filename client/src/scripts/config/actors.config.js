@@ -186,10 +186,17 @@ const systems = [
     onNext: (elapsedTime, store, context, entities) => {
       entities.forEach((target) => {
         let { rect, physics } = target.components;
+
         if (rect.x < 0 || rect.x + rect.width > context.canvas.width) {
           physics.vx = -physics.vx;
         }
-        if (rect.y < 0 || rect.y + rect.height > context.canvas.height) {
+
+        if (rect.y < 0) {
+          physics.vy = -physics.vy;
+        }
+
+        if (rect.y + rect.height > context.canvas.height) {
+          store.dispatch('hit');
           physics.vy = -physics.vy;
         }
       });

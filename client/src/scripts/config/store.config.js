@@ -4,6 +4,7 @@ import Store from '../lib/Store';
 const state = {
   status: 'ready',
   message: globalConfig.message.start,
+  lives: 3,
 };
 
 const actions = {
@@ -30,6 +31,10 @@ const actions = {
       context.commit('setMessage', globalConfig.message.start);
     }
   },
+
+  hit: (context) => {
+    context.commit('decreaseLives');
+  },
 };
 
 const mutations = {
@@ -39,6 +44,11 @@ const mutations = {
 
   setMessage: (state, payload) => {
     state.message = payload;
+  },
+
+  decreaseLives: (state) => {
+    state.lives--;
+    console.log(state.lives);
   },
 };
 
