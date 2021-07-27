@@ -3,7 +3,7 @@ import Display from '../lib/Display';
 
 let { display } = globalConfig;
 export default new Display({
-  canvas: document.querySelector('gui-display').canvas,
+  canvas: document.querySelector('app-game').canvas,
   height: display.height,
   width: display.width,
 });

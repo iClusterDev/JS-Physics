@@ -1,7 +1,7 @@
 import store from '../config/store.config';
-import GUIElement from './GUIElement';
+import Gui from '../lib/Gui';
 
-class GUIMessage extends GUIElement {
+class AppMessage extends Gui {
   constructor() {
     super();
     this.message = store.state.message;
@@ -23,32 +23,29 @@ class GUIMessage extends GUIElement {
       this.shadowRoot.innerHTML = `
           <style>
             #app-message {
-              font-family: 'Press Start 2P';
               position: absolute;
-              color: white;
               top: 50%;
               left: 50%;
               text-align: center;
               transform: translate(-50%, -50%);
             }
 
-            .message-text {
-              font-size: 1rem;
+            #app-message .message-text {
               margin-bottom: 1rem;
               text-transform: uppercase;
             }
 
-            .message-subtext {
+            #app-message .message-subtext {
               font-size: 0.80rem;
               color: #9999;
             }
     
             @media only screen and (max-width: 600px) {
-              .message-text {
+              #app-message .message-text {
                 font-size: 0.80rem;
               }
     
-              .message-subtext {
+              #app-message .message-subtext {
                 font-size: 0.60rem;
               }
             }
@@ -65,4 +62,4 @@ class GUIMessage extends GUIElement {
   }
 }
 
-window.customElements.define('gui-message', GUIMessage);
+window.customElements.define('app-message', AppMessage);

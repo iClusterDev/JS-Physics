@@ -1,3 +1,1 @@
-import './GUIMessage';
-import './GUIDisplay';
-import './GUILives';
+import './AppGame';
