@@ -2,9 +2,11 @@ import store from '../config/store.config';
 import Gui from '../lib/Gui';
 
 class AppMessage extends Gui {
+  #message;
+
   constructor() {
     super();
-    this.message = store.state.message;
+    this.#message = store.state.message;
 
     this.create();
     this.render();
@@ -12,13 +14,13 @@ class AppMessage extends Gui {
 
   create() {
     store.on('message-change', () => {
-      this.message = store.state.message;
+      this.#message = store.state.message;
       this.render();
     });
   }
 
   render() {
-    let { text = '', subtext = '' } = this.message;
+    let { text = '', subtext = '' } = this.#message;
     if (text.length > 0 || subtext.length > 0) {
       this.shadowRoot.innerHTML = `
           <style>

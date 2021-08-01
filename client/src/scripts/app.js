@@ -19,7 +19,6 @@ export default () => {
           engine.start();
         }
         break;
-
       case 'Escape':
         store.dispatch('quit');
         if (status === 'paused') {
@@ -27,7 +26,6 @@ export default () => {
           display.clear();
         }
         break;
-
       case 'KeyP':
         store.dispatch('pause');
         if (status === 'running') {
@@ -48,7 +46,11 @@ export default () => {
         0,
         0,
         level.buffer.width,
-        level.buffer.height
+        level.buffer.height,
+        0,
+        0,
+        display.width,
+        display.height
       );
     });
 };

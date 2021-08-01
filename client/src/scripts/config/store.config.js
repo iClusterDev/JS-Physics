@@ -48,7 +48,6 @@ const mutations = {
 
   decreaseLives: (state) => {
     state.lives--;
-    console.log(state.lives);
   },
 };
 
