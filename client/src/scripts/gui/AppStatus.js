@@ -1,47 +1,41 @@
+import store from '../config/store.config';
 import Gui from '../lib/Gui';
 
 class AppStatus extends Gui {
   constructor() {
     super();
-    this.lives = 0;
+    this.lives = store.state.lives;
+    this.score = 999;
 
     this.create();
     this.render();
   }
 
-  create() {}
+  create() {
+    let self = this;
+    store.on('lives-change', () => {
+      self.lives = store.state.lives;
+      self.render();
+    });
+  }
 
   render() {
     this.shadowRoot.innerHTML = `
       <style>
         #app-status {
-          position: absolute;
-          top: 0; left: 0;
-          width: calc(100% - 2rem);
-          padding: 1rem;
           font-size: 0.8rem;
-          background: green;
+          padding: 1rem;
+          display: flex;
+          justify-content: space-between;
         }
       </style>
 
-      <div id="app-status">LIVES: ${this.lives}</div>
+      <div id="app-status">
+        <div class="lives">lives: ${this.lives}</div>
+        <div class="score">score: ${this.score}</div>
+      </div>
     `;
   }
-
-  // static get observedAttributes() {
-  //   return ['value'];
-  // }
-
-  // attributeChangedCallback(name, oldValue, newValue) {
-  //   switch (name) {
-  //     case 'value':
-  //       this.lives = newValue;
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-  // }
 }
 
 window.customElements.define('app-status', AppStatus);

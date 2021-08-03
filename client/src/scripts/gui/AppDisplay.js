@@ -1,10 +1,11 @@
-import store from '../config/store.config';
+import './AppStatus';
+import './AppMessage';
 import Gui from '../lib/Gui';
 
 class AppDisplay extends Gui {
   constructor() {
     super();
-    this.statusLives = store.state.lives;
+
     this.create();
     this.render();
   }
@@ -13,13 +14,7 @@ class AppDisplay extends Gui {
     return this.shadowRoot.querySelector('canvas');
   }
 
-  create() {
-    let self = this;
-    store.on('lives-change', () => {
-      self.statusLives = store.state.lives;
-      self.render();
-    });
-  }
+  create() {}
 
   render() {
     this.shadowRoot.innerHTML = `
@@ -28,20 +23,27 @@ class AppDisplay extends Gui {
           position: relative;
         }
 
-        #app-display .buffer {
-          border: solid 1px white;
+        #app-display .status {
+          position: absolute;
+          color: white;
+          width: 100%;
         }
 
-        #app-display .status {
-          font-size: 0.8rem;
+        #app-display .message {
           position: absolute;
-          padding: 1rem;
-          width: calc(100% - 2rem);
+          top: 50%; left: 50%;
+          text-align: center;
+          transform: translate(-50%, -50%);
+        }
+
+        #app-display .buffer {
+          border: solid 1px white;
         }
       </style>
 
       <div id="app-display">
-        <div class="status">lives: ${this.statusLives}</div>
+        <app-status class="status"></app-status>
+        <app-message class="message"></app-message>
         <canvas class="buffer"></canvas>
       </div>
     `;
@@ -49,38 +51,3 @@ class AppDisplay extends Gui {
 }
 
 window.customElements.define('app-display', AppDisplay);
-
-// import Gui from '../lib/Gui';
-
-// class AppDisplay extends Gui {
-//   constructor() {
-//     super();
-//     this.render();
-//   }
-
-//   get canvas() {
-//     return this.shadowRoot.querySelector('canvas');
-//   }
-
-//   render() {
-//     this.shadowRoot.innerHTML = `
-//       <style>
-//         #app-display {
-//           position: relative;
-//         }
-
-//         #app-display canvas {
-//           position: relative;
-//           border: solid 1px white;
-//         }
-//       </style>
-
-//       <div id="app-display">
-//         <slot name="display-header"></slot>
-//         <canvas width="832" height="640"></canvas>
-//       </div>
-//     `;
-//   }
-// }
-
-// window.customElements.define('app-display', AppDisplay);
