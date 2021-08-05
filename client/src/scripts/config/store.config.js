@@ -5,6 +5,7 @@ const state = {
   status: 'ready',
   message: globalConfig.message.start,
   lives: 3,
+  score: 0,
 };
 
 const actions = {
@@ -35,6 +36,10 @@ const actions = {
   hit: (context) => {
     context.commit('decreaseLives');
   },
+
+  score: (context) => {
+    context.commit('increaseScore');
+  },
 };
 
 const mutations = {
@@ -48,6 +53,10 @@ const mutations = {
 
   decreaseLives: (state) => {
     state.lives--;
+  },
+
+  increaseScore: (state) => {
+    state.score++;
   },
 };
 

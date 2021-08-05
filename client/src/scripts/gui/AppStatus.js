@@ -5,7 +5,7 @@ class AppStatus extends Gui {
   constructor() {
     super();
     this.lives = store.state.lives;
-    this.score = 999;
+    this.score = store.state.score;
 
     this.create();
     this.render();
@@ -13,8 +13,14 @@ class AppStatus extends Gui {
 
   create() {
     let self = this;
+
     store.on('lives-change', () => {
       self.lives = store.state.lives;
+      self.render();
+    });
+
+    store.on('score-change', () => {
+      self.score = store.state.score;
       self.render();
     });
   }

@@ -133,8 +133,10 @@ const systems = [
               rect2.height
             )
           ) {
-            if (name1 === 'ball') physics1.vy = -physics1.vy;
-            if (name2 === 'ball') physics2.vy = -physics2.vy;
+            if (name2 === 'ball') {
+              physics2.vy = -physics2.vy;
+              store.dispatch('score');
+            }
           }
         }
       }
@@ -196,8 +198,8 @@ const systems = [
         }
 
         if (rect.y + rect.height > context.canvas.height) {
-          store.dispatch('hit');
           physics.vy = -physics.vy;
+          store.dispatch('hit');
         }
       });
     },
@@ -218,81 +220,3 @@ const systems = [
 ];
 
 export default { components, entities, systems };
-
-// function rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2) {
-//   if (x2 > x1 + w1 || x1 > x2 + w2 || y2 > y1 + h1 || y1 > y2 + h2) {
-//     return false;
-//   } else {
-//     return true;
-//   }
-// }
-
-// function collisionDetect() {
-//   let square1;
-//   let square2;
-
-//   squares.forEach((square) => (square.collision = false));
-//   for (let i = 0; i < squares.length; i++) {
-//     square1 = squares[i];
-//     for (let j = i + 1; j < squares.length; j++) {
-//       square2 = squares[j];
-//       // if rectIntersect
-//       // emit collision with payload (square1, square2)
-//       if (
-//         rectIntersect(
-//           square1.x,
-//           square1.y,
-//           square1.size,
-//           square1.size,
-//           square2.x,
-//           square2.y,
-//           square2.size,
-//           square2.size
-//         )
-//       ) {
-//         square1.collision = true;
-//         square2.collision = true;
-
-//         // compute the collision vector
-//         let vCollision = {
-//           x: square2.cx - square1.cx,
-//           y: square2.cy - square1.cy,
-//         };
-
-//         let vCollisionDist = Math.sqrt(
-//           (square2.cx - square1.cx) * (square2.cx - square1.cx) +
-//             (square2.cy - square1.cy) * (square2.cy - square1.cy)
-//         );
-
-//         let vCollisionNorm = {
-//           x: vCollision.x / vCollisionDist,
-//           y: vCollision.y / vCollisionDist,
-//         };
-
-//         let vRelativeVelocity = {
-//           x: square1.vx - square2.vx,
-//           y: square1.vy - square2.vy,
-//         };
-
-//         let speed =
-//           vRelativeVelocity.x * vCollisionNorm.x +
-//           vRelativeVelocity.y * vCollisionNorm.y;
-
-//         if (speed > 0) {
-//           let dSpeed1 = {
-//             x: -speed * vCollisionNorm.x,
-//             y: -speed * vCollisionNorm.y,
-//           };
-
-//           let dSpeed2 = {
-//             x: speed * vCollisionNorm.x,
-//             y: speed * vCollisionNorm.y,
-//           };
-
-//           square1.onCollision(dSpeed1);
-//           square2.onCollision(dSpeed2);
-//         }
-//       }
-//     }
-//   }
-// }

@@ -29,6 +29,11 @@ class AppGame extends Gui {
 
       <div id="app-game">
         <app-title></app-title>
+
+        <!-- rename this to app-play? -->
+        <!-- add app-loose? -->
+        <!-- add app-win? -->
+      
         <app-display></app-display>
       </div>
     `;
