@@ -136,6 +136,7 @@ const systems = [
             if (name2 === 'ball') {
               physics2.vy = -physics2.vy;
               store.dispatch('score');
+              if (store.state.score === 3) store.dispatch('win');
             }
           }
         }
@@ -200,6 +201,7 @@ const systems = [
         if (rect.y + rect.height > context.canvas.height) {
           physics.vy = -physics.vy;
           store.dispatch('hit');
+          if (store.state.lives === 0) store.dispatch('loose');
         }
       });
     },

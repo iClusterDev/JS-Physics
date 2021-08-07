@@ -33,6 +33,13 @@ export default () => {
         }
         break;
     }
+
+    store.on('status-change', () => {
+      if (store.state.status === 'win' || store.state.status === 'loose') {
+        engine.stop();
+        console.log('ok');
+      }
+    });
   });
 
   engine

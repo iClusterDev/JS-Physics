@@ -1,9 +1,9 @@
-import store from '../config/store.config';
 import Gui from '../lib/Gui';
 import './AppDisplay';
 import './AppMessage';
 import './AppStatus';
 import './AppTitle';
+import './AppResult';
 
 class AppGame extends Gui {
   constructor() {
@@ -29,6 +29,7 @@ class AppGame extends Gui {
 
       <div id="app-game">
         <app-title></app-title>
+        <app-result></app-result>
 
         <!-- rename this to app-play? -->
         <!-- add app-loose? -->

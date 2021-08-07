@@ -11,7 +11,12 @@ const state = {
 const actions = {
   start: (context) => {
     let { status } = context.state;
-    if (status === 'ready' || status === 'paused') {
+    if (
+      status === 'ready' ||
+      status === 'paused' ||
+      status === 'win' ||
+      status === 'loose'
+    ) {
       context.commit('setStatus', 'running');
       context.commit('setMessage', {});
     }
@@ -33,12 +38,20 @@ const actions = {
     }
   },
 
+  score: (context) => {
+    context.commit('increaseScore');
+  },
+
   hit: (context) => {
     context.commit('decreaseLives');
   },
 
-  score: (context) => {
-    context.commit('increaseScore');
+  win: (context) => {
+    context.commit('setStatus', 'win');
+  },
+
+  loose: (context) => {
+    context.commit('setStatus', 'loose');
   },
 };
 
