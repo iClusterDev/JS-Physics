@@ -27,11 +27,12 @@ class Buffer {
     }
 
     this.#color = color;
-    this.#buffer.imageSmoothingEnabled = false;
     if (color !== 'transparent') {
       this.#buffer.fillStyle = this.#color;
       this.#buffer.fillRect(0, 0, width, height);
     }
+
+    this.#buffer.imageSmoothingEnabled = false;
   }
 
   // readonly context

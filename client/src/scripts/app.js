@@ -4,60 +4,15 @@
 // win condition: score go up to 10
 // loose condition: bouncing square touches the ground
 
-import display from './config/display.config';
-import engine from './config/engine.config';
-import level from './config/level.config';
-import store from './config/store.config';
+// bouncer-splash
+// display element on index.html
 
-export default () => {
-  window.addEventListener('keydown', (event) => {
-    let { status } = store.state;
-    switch (event.code) {
-      case 'Enter':
-        store.dispatch('start');
-        if (status === 'ready' || status === 'paused') {
-          engine.start();
-        }
-        break;
-      case 'Escape':
-        store.dispatch('quit');
-        if (status === 'paused') {
-          // entities = init();
-          display.clear();
-        }
-        break;
-      case 'KeyP':
-        store.dispatch('pause');
-        if (status === 'running') {
-          engine.stop();
-        }
-        break;
-    }
+import Display from './lib/Display';
 
-    store.on('status-change', () => {
-      if (store.state.status === 'win' || store.state.status === 'loose') {
-        engine.stop();
-        console.log('ok');
-      }
-    });
-  });
+const display = new Display({
+  canvas: document.querySelector('#display'),
+  width: 832,
+  height: 640,
+});
 
-  engine
-    .onUpdate((elapsedTime) => {
-      display.clear();
-      level.next(elapsedTime, store, display.context);
-    })
-    .onRender(() => {
-      display.context.drawImage(
-        level.buffer,
-        0,
-        0,
-        level.buffer.width,
-        level.buffer.height,
-        0,
-        0,
-        display.width,
-        display.height
-      );
-    });
-};
+export default () => {};

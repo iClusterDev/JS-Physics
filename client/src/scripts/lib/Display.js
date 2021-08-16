@@ -44,6 +44,7 @@ class Display extends Buffer {
    */
   #init() {
     this.#resize();
+
     window.addEventListener('keypress', (event) => {
       if (event.code === 'KeyF') {
         this.#toggleFullscreen();
@@ -86,6 +87,7 @@ class Display extends Buffer {
       newWidth = height / this.#aspectRatio;
       newHeight = height;
     }
+
     if (newWidth >= this.#maxWidth) {
       this.canvas.width = this.#maxWidth;
       this.canvas.height = this.#maxWidth * this.#aspectRatio;
