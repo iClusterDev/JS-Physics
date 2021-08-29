@@ -1,3 +1,5 @@
 import app from './scripts/app';
 
-app();
+window.onload = () => {
+  app();
+};
